@@ -1,0 +1,40 @@
+server:
+  port: 8001
+  servlet:
+    context-path: /gateway
+spring:
+  application:
+    name: gateway
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
+    nacos:
+      discovery:
+        server-addr: http://192.168.225.1:8848/
+        namespace: 47bd7ca7-b98a-4a84-8eab-ed27542459d8
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-router
+          uri: lb://user
+          predicates:
+            - Path=/api/wyz/user/**
+          filters:
+            - StripPrefix=2
+
+ribbon:
+  eager-load:
+    enabled: true
+logging:
+  config: classpath:logging-config.xml
+
+wyz:
+  security:
+    secret:
+      key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCjx0bEfpRh
+      expiration: 6000000
